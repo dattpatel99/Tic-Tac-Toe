@@ -21,22 +21,25 @@ window.onload = goesFirst();
 // Checks the status of the element user has choosen and responds as should
 function checkStatus() {
     let idTarget = document.getElementById(this.event.target.id) //Gets the ID of the place that we clicked and then the element from the document
+    // This is to alert that game has ended and user should reload to try again
     if (gameEnd && idTarget.classList.contains("locked")) {
-        alert("Game has ended.");
+        alert("Game has ended. Reload to try again.");
     }
+    // Alert for when player/s try to change a locked box
     else if(idTarget.classList.contains("locked")){
-        alert("A player has already choosen this box");
+        alert("A player has already choosen this box.");
     }
+    // Main Checking| Used for both DP and SP
     else {
         //This basically changes the symbol in the box and then adds a lock status in the class
-        idTarget.innerText = playerSym;
+        idTarget.innerText = playerSym; //FIXME: CHANGE TO CURRENT SYMBOL FOR TWO PLAYERS
         idTarget.setAttribute("style", "font-size: 35px");
         idTarget.classList.add("locked", "text-align-center");
-        playerTurn = false;
+        playerTurn = false; //ONLY FOR SP
 
         if (checkWin(arrBoxes, playerSym)) {
             //FIXME: 
-            gameFinale = "Game over. Player has won. Reload to try again."; 
+            gameFinale = "Game over. Player has won. Reload to try again."; //FIXME: change for which player won
             alert(gameFinale);
             lockAll(arrBoxes);
             // Lock all the grid places and end it somehow
@@ -44,12 +47,15 @@ function checkStatus() {
         }
         else if (allLocked(arrBoxes)) {
             //FIXME:
-            gameFinale = "Game over. Game has ended in a draw. Reload to try again.";
+            gameFinale = "Game over. Game has ended in a draw. Reload to try again."; 
             alert(gameFinale);
             gameEnd = true;
             //Only occurs if all locked hence tie
 
         }
+        //FIXME:
+        //CHANGE THE CURRENT SYMBOL
+        //ONLY DO THIS IF SINGLE PLAYER MODE
         else {
             while (!playerTurn) {
                 // Make comp move
@@ -228,7 +234,7 @@ function makeFakeBox(boxes) {
  * goesFirst
  */
 
-//Decides who goes first
+//Decides who goes first for 
 function goesFirst() {
     const firstWho = Math.floor(Math.random() * 2); // Returns either 0 to 1
     // localStorage.setItem("Wins:", 0);
@@ -241,12 +247,16 @@ function goesFirst() {
         // Make comp move
         playerTurn = false;
     }
+    //FIXME:
+    //ADD CAN ELSE IF OPTION FOR WHEN THE MODE IS DP
     else {
         //userGoesFirst
         alert("You are going first, symbol: X");
         // currSymbol = "X";
         playerTurn = true;
     }
+
+    //ADD AN AND OP SINCE IT HAS TO BE NOT PLAYERS TURN AND MODE HAS TO BE SINGLE PLAYER
     if (!playerTurn) {
         compAI(arrBoxes, playerSym, compSym);
         playerTurn = true;
