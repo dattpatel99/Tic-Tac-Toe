@@ -28,13 +28,13 @@
                         <p class="text-white fs-5 m-1 p-1 w-25 justify-content-start">Tic-Tac-Toe</p>
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-75 justify-content-end">
                             <li class="nav-item p-2">
-                                <button type="button" class="btn btn-dark">Previous Data</button>
+                                <button type="button" class="btn btn-dark display: disabled">Previous Data</button>
                             </li>
                             <li class="nav-item p-2">
-                                <button type="button" class="btn btn-dark">Single Player</button>
+                                <button type="button" class="btn btn-dark" onclick = "changeModeToSP(arrBoxes)">Single Player</button>
                             </li>
                             <li class="nav-item p-2">
-                                <button type="button" class="btn btn-dark">Double Player</button>
+                                <button type="button" class="btn btn-dark" onclick = "changeModeToDP(arrBoxes)">Double Player</button>
                             </li>
                         </ul>
                     </div>
@@ -47,26 +47,26 @@
                 <div class="top">
                     <div class="row text-center">
                         <div class="col square top left border-bottom border-end border-light">
-                            <p class="pb-5 pt-5 w-100 h-100" id="topLeft" onclick="checkStatus()"> </p>
+                            <p class="pb-5 pt-5 w-100 h-100" id="topLeft" onclick="mainFunction()"> </p>
                         </div>
                         <div class="col square top border-bottom border-end border-start border-light">
-                            <p class="pb-5 pt-5 w-100 h-100" id="topMiddle" onclick="checkStatus()"> </p>
+                            <p class="pb-5 pt-5 w-100 h-100" id="topMiddle" onclick="mainFunction()"> </p>
                         </div>
                         <div class="col  square top right border-bottom border-start border-light">
-                            <p class="pb-5 pt-5 w-100 h-100" id="topRight" onclick="checkStatus()"> </p>
+                            <p class="pb-5 pt-5 w-100 h-100" id="topRight" onclick="mainFunction()"> </p>
                         </div>
                     </div>
                 </div>
                 <div class="middle">
                     <div class="row text-center">
                         <div class="col  square middle left border-top border-bottom border-end border-light">
-                            <p class="pb-5 pt-5 w-100 h-100" id="middleLeft" onclick="checkStatus()"> </p>
+                            <p class="pb-5 pt-5 w-100 h-100" id="middleLeft" onclick="mainFunction()"> </p>
                         </div>
                         <div class="col square middle border border-light">
-                            <p class="pb-5 pt-5 w-100 h-100" id="middleMiddle" onclick="checkStatus()"> </p>
+                            <p class="pb-5 pt-5 w-100 h-100" id="middleMiddle" onclick="mainFunction()"> </p>
                         </div>
                         <div class="col square middle right border-top border-bottom border-start border-light">
-                            <p class="pb-5 pt-5 w-100 h-100" id="middleRight" onclick="checkStatus()"> </p>
+                            <p class="pb-5 pt-5 w-100 h-100" id="middleRight" onclick="mainFunction()"> </p>
                         </div>
                     </div>
 
@@ -74,27 +74,26 @@
                 <div class="bottom">
                     <div class="row text-center">
                         <div class="col square bottom left border-top border-end border-light">
-                            <p class="pb-5 pt-5 w-100 h-100" id="bottomLeft" onclick="checkStatus()"> </p>
+                            <p class="pb-5 pt-5 w-100 h-100" id="bottomLeft" onclick="mainFunction()"> </p>
                         </div>
                         <div class="col square bottom border-top border-start border-end border-light">
-                            <p class="pb-5 pt-5 w-100 h-100" id="bottomMiddle" onclick="checkStatus()"> </p>
+                            <p class="pb-5 pt-5 w-100 h-100" id="bottomMiddle" onclick="mainFunction()"> </p>
                         </div>
                         <div class="col square bottom right border-top border-start border-light">
-                            <p class="pb-5 pt-5 w-100 h-100" id="bottomRight" onclick="checkStatus()"> </p>
+                            <p class="pb-5 pt-5 w-100 h-100" id="bottomRight" onclick="mainFunction()"> </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
 
-    <!-- <script src="index.js"></script> -->
+    <script src="index.js"></script>
 </body>
 
 </html>

@@ -1,9 +1,18 @@
+// player turn is for first player in DP mode
 var playerTurn;
-let playerSym = "X";
-let compSym = "O";
-var gameEnd = false;
-var gameFinale;
 
+// first player symbol
+let playerSym = "X";
+// Second player/Comp symbol
+let compSym = "O";
+// Holds whether the game has ended for not
+var gameEnd = false;
+// holds the final outcome of the match
+var gameFinale;
+// Used to change the modes of playing
+var singlePlayer = true;
+
+// These are used to hold the elements of grid 
 topLeft = document.getElementById("topLeft");
 topMiddle = document.getElementById("topMiddle");
 topRight = document.getElementById("topRight");
@@ -14,66 +23,63 @@ bottomLeft = document.getElementById("bottomLeft");
 bottomMiddle = document.getElementById("bottomMiddle");
 bottomRight = document.getElementById("bottomRight");
 
+// array holding each grid element starting from top left to bottom right
 let arrBoxes = [topLeft, topMiddle, topRight, middleLeft, middleMiddle, middleRight, bottomLeft, bottomMiddle, bottomRight];
 
+// what happens when the page is reloaded
 window.onload = goesFirst();
 
 // Checks the status of the element user has choosen and responds as should
-function checkStatus() {
-    let idTarget = document.getElementById(this.event.target.id) //Gets the ID of the place that we clicked and then the element from the document
+function mainFunction() {
+    //Gets the ID of the place that we clicked and then the element from the document
+    let idTarget = document.getElementById(this.event.target.id)
+
     // This is to alert that game has ended and user should reload to try again
     if (gameEnd && idTarget.classList.contains("locked")) {
         alert("Game has ended. Reload to try again.");
     }
+
     // Alert for when player/s try to change a locked box
-    else if(idTarget.classList.contains("locked")){
+    else if (idTarget.classList.contains("locked")) {
         alert("A player has already choosen this box.");
     }
-    // Main Checking| Used for both DP and SP
+
+    // Main Checking | Used for both DP and SP
     else {
         //This basically changes the symbol in the box and then adds a lock status in the class
-        idTarget.innerText = playerSym; //FIXME: CHANGE TO CURRENT SYMBOL FOR TWO PLAYERS
+        idTarget.innerText = currSymbol;
         idTarget.setAttribute("style", "font-size: 35px");
         idTarget.classList.add("locked", "text-align-center");
-        playerTurn = false; //ONLY FOR SP
 
-        if (checkWin(arrBoxes, playerSym)) {
-            //FIXME: 
-            gameFinale = "Game over. Player has won. Reload to try again."; //FIXME: change for which player won
-            alert(gameFinale);
-            lockAll(arrBoxes);
-            // Lock all the grid places and end it somehow
-            //Player won, act that way
-        }
-        else if (allLocked(arrBoxes)) {
-            //FIXME:
-            gameFinale = "Game over. Game has ended in a draw. Reload to try again."; 
-            alert(gameFinale);
-            gameEnd = true;
-            //Only occurs if all locked hence tie
+        if (singlePlayer) {
+            playerTurn = false; // Changes to comp turns
 
-        }
-        //FIXME:
-        //CHANGE THE CURRENT SYMBOL
-        //ONLY DO THIS IF SINGLE PLAYER MODE
-        else {
+            if (checkWin(arrBoxes, playerSym)) {
+                //FIXME: 
+                gameFinale = "Game over. Player has won. Reload to try again."; //FIXME: change for which player won
+                alert(gameFinale);
+                lockAll(arrBoxes);
+                // Lock all the grid places and end it somehow
+                //Player won, act that way
+            }
+
+            else if (allLocked(arrBoxes)) {
+                tiePrinting();
+            }
+
             while (!playerTurn) {
                 // Make comp move
                 compAI(arrBoxes, playerSym, compSym);
                 if (checkWin(arrBoxes, compSym)) {
                     //FIXME: 
-                    gameFinale = "Game over. Player has Lost. Reload to try again"; 
+                    gameFinale = "Game over. Player has Lost. Reload to try again";
                     alert(gameFinale);
                     lockAll(arrBoxes);
                     // Lock All the grid places and end it somehow 
                     //Player won, act that way
                 }
                 else if (allLocked(arrBoxes)) {
-                    //FIXME:
-                    gameFinale = "Game over. Game has ended in a draw. Reload to try again";
-                    alert(gameFinale);
-                    gameEnd = true;
-                    //Only occurs if all locked hence tie
+                    tiePrinting();
                 }
                 playerTurn = true;
                 // idTarget.classList.remove("pb-5", "pt-5");
@@ -81,10 +87,126 @@ function checkStatus() {
                 //changSymbol(); 
             }
         }
+
+        else {
+            if (checkWin(arrBoxes, currSymbol)) {
+                // In future if we want to allow players to choose the sybol use playerTurn variabe
+                if (currSymbol === "X") {
+                    gameFinale = "Game over. Player 1 has won. Reload to try again.";
+                    alert(gameFinale);
+                    lockAll(arrBoxes);
+                }
+                else if (currSymbol === "O") {
+                    gameFinale = "Game over. Player 2 has won. Reload to try again.";
+                    alert(gameFinale);
+                    lockAll(arrBoxes);
+                }
+            }
+            else if (allLocked(arrBoxes)) {
+                tiePrinting();
+            }
+            changSymbol();
+        }
     }
 }
 
 /**Functions */
+
+/**
+ * Full program related functions
+ * changetoSP
+ * changetoDP
+ * changSymb
+ * lockAll
+ * goesFirst
+ */
+
+// Clear the board and classes
+//Param:
+function clearAll(grid){
+    for(let i = 0; i < grid.length; i++){
+        grid[i].innerText = " ";
+        if(grid[i].classList.contains("locked")){
+            grid[i].classList.remove("locked");
+        }
+    }
+}
+
+// Changes are made based on which mode player wants
+// Param:
+function changeModeToSP(box) {
+    singlePlayer = true;
+    clearAll(box);
+    goesFirst();
+}
+
+// Changes are made based on which mode player wants
+// Param:
+function changeModeToDP(box) {
+    singlePlayer = false;
+    clearAll(box);
+    goesFirst();
+}
+
+//Decides who goes first for SP and DP mode
+function goesFirst() {
+    const firstWho = Math.floor(Math.random() * 2); // Returns either 0 to 1
+    if (firstWho == 1 && singlePlayer) {
+        //compGoes first
+        alert("Computer is going first, symbol: O");
+        currSymbol = "X";
+        // Allows comp to make move
+        playerTurn = false;
+    }
+    // For second player in the event where this is being player by two people
+    else if (firstWho == 1 && !singlePlayer) {
+        alert("Second player is going first, symbol: O");
+        currSymbol = "O";
+        playerTurn = false;
+    }
+    else {
+        // Player 1 goes first in DP mode and Player goes first in SP mode
+        if (!singlePlayer) {
+            alert("Player 1 is going first, symbol: X");
+        }
+        else {
+            alert("You are going first, symbol: X");
+        }
+        currSymbol = "X";
+        playerTurn = true;
+    }
+    //ADD AN AND OP SINCE IT HAS TO BE NOT PLAYERS TURN AND MODE HAS TO BE SINGLE PLAYER
+    if (!playerTurn && singlePlayer) {
+        compAI(arrBoxes, playerSym, compSym);
+        playerTurn = true;
+    }
+}
+
+// Locks all the grid boxes in the event we or comp wins when some boxes are empty
+// Param: the grid <p> elements
+// Return: None
+function lockAll(gridLoc) {
+    for (let i = 0; i < gridLoc.length; i++) {
+        if (!(gridLoc[i].classList.contains("locked"))) {
+            gridLoc[i].classList.add("locked");
+        }
+    }
+    gameEnd = true;
+}
+
+// Used to change the symbol after a turn
+function changSymbol() {
+    // In future if we want the player to be able to switch between the different symbols use a different func to chagne player turn
+    if (currSymbol == "O") {
+        currSymbol = "X";
+        playerTurn = true;
+    }
+    else {
+        currSymbol = "O";
+        playerTurn = false;
+    }
+}
+
 
 /**Board checking related functions
  * checkWin
@@ -122,12 +244,10 @@ function checkIfPossibleWin(futureGridVals, checkSymbol) {
         (futureGridVals[2] == checkSymbol && futureGridVals[4] == checkSymbol && futureGridVals[6] == checkSymbol));
 }
 
-
 // Checks if all states are locked
 // Param: boxes, holds array of elements from grid <p> from html file
 // Return: Boolean of whether they are all locked or not
 function allLocked(boxes) {
-
     for (let i = 0; i < boxes.length; i++) {
         if (!(boxes[i].classList.contains("locked"))) {
             return false;
@@ -136,6 +256,11 @@ function allLocked(boxes) {
     return true;
 }
 
+function tiePrinting() {
+    gameFinale = "Game over. Game has ended in a draw. Reload to try again.";
+    alert(gameFinale);
+    gameEnd = true;
+}
 
 /**Compter move related functions
  * randMoveCal
@@ -227,62 +352,3 @@ function makeFakeBox(boxes) {
     }
     return arrayFake;
 }
-
-/**
- * Full program related functions
- * changSymb
- * goesFirst
- */
-
-//Decides who goes first for 
-function goesFirst() {
-    const firstWho = Math.floor(Math.random() * 2); // Returns either 0 to 1
-    // localStorage.setItem("Wins:", 0);
-    // localStorage.setItem("Ties:", 0);
-    // localStorage.setItem("Lost:", 0);
-    if (firstWho == 1) {
-        //compGoes first
-        alert("Computer is going first, symbol: O");
-        // currSymbol = "O";
-        // Make comp move
-        playerTurn = false;
-    }
-    //FIXME:
-    //ADD CAN ELSE IF OPTION FOR WHEN THE MODE IS DP
-    else {
-        //userGoesFirst
-        alert("You are going first, symbol: X");
-        // currSymbol = "X";
-        playerTurn = true;
-    }
-
-    //ADD AN AND OP SINCE IT HAS TO BE NOT PLAYERS TURN AND MODE HAS TO BE SINGLE PLAYER
-    if (!playerTurn) {
-        compAI(arrBoxes, playerSym, compSym);
-        playerTurn = true;
-    }
-}
-
-// Locks all the grid boxes in the event we or comp wins when some boxes are empty
-// Param: the grid <p> elements
-// Return: None
-function lockAll(gridLoc) {
-    for (let i = 0; i < gridLoc.length; i++) {
-        if (!(gridLoc[i].classList.contains("locked"))) {
-            gridLoc[i].classList.add("locked");
-        }
-    }
-    gameEnd = true;
-}
-
-// Used to change the symbol after a turn
-// function changSymbol() {
-//     if (currSymbol == "O") {
-//         currSymbol = "X";
-//         playerTurn = true;
-//     }
-//     else {
-//         currSymbol = "O";
-//         playerTurn = false;
-//     }
-// }
